@@ -38,9 +38,13 @@
  **                       DEFINITIONS FOR FTP SERVER                           **
  **                                                                            **
  *******************************************************************************/
+ 
+#pragma once
 
 #ifndef FTP_SERVER_TEENSY41_H
 #define FTP_SERVER_TEENSY41_H
+
+////////////////////////////////////////////////////////////////////////////
 
 #if ( defined(CORE_TEENSY) && defined(__IMXRT1062__) && defined(ARDUINO_TEENSY41) )
   // For Teensy 4.1
@@ -58,6 +62,8 @@
   //#error Only Teensy 4.1 supported
 #endif
 
+////////////////////////////////////////////////////////////////////////////
+
 #define FTP_SERVER_TEENSY41_VERSION            "FTP_Server_Teensy41 v1.0.0"
 
 #define FTP_SERVER_TEENSY41_VERSION_MAJOR      1
@@ -65,6 +71,8 @@
 #define FTP_SERVER_TEENSY41_VERSION_PATCH      0
 
 #define FTP_SERVER_TEENSY41_VERSION_INT        1000000
+
+////////////////////////////////////////////////////////////////////////////
 
 #include "FTP_Server_Teensy41_Config.h"
 #include "FTP_Server_Teensy41.hpp"

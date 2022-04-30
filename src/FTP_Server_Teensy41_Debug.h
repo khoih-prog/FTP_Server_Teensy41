@@ -1,17 +1,16 @@
 /****************************************************************************************************************************
-  AsyncDNSServer_Teensy41_Debug.h
+  FTP_Server_Teensy41_Debug.h
    
-  AsyncDNSServer_Teensy41 is a Async UDP library for the Teensy41 using built-in Ethernet and QNEThernet
+  FTP_Server_Teensy41 is an FTP Server for Teensy 4.1 using SD, FS, etc. with QNEthernet or NativeEthernet
   
-  Based on and modified from ESPAsyncUDP Library (https://github.com/me-no-dev/ESPAsyncUDP)
-  Built by Khoi Hoang https://github.com/khoih-prog/AsyncDNSServer_Teensy41
+  Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
+  Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
   
-  Version: 1.1.1
+  Version: 1.0.0
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
-  1.1.1   K Hoang      19/03/2022 Initial coding for Teensy 4.1 using built-in QNEthernet.
-                                  Bump up version to v1.1.1 to sync with AsyncDNSServer_STM32 v1.1.1  
+  1.0.0   K Hoang      30/04/2022 Initial porting and coding for Teensy 4.1 using built-in QNEthernet, NativeEthernet 
   *****************************************************************************************************************************/
 
 #pragma once

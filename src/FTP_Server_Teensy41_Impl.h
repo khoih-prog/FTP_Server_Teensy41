@@ -73,6 +73,8 @@
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#pragma once
+
 #ifndef FTP_SERVER_TEENSY41_IMPL_H
 #define FTP_SERVER_TEENSY41_IMPL_H
 
@@ -81,6 +83,7 @@
 #include "FTP_Server_Teensy41_Debug.h"
 
 #if USE_QN_ETHERNET
+
   #include "QNEthernet.h"             // https://github.com/ssilverman/QNEthernet
   
   #include "QNEthernetClient.h"       // https://github.com/ssilverman/QNEthernet
@@ -88,18 +91,19 @@
   #include "QNEthernetUDP.h"          // https://github.com/ssilverman/QNEthernet
   
   using namespace qindesign::network;
-  #warning Using QNEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
-  #define SHIELD_TYPE           "using QNEthernet"
+  
 #elif USE_NATIVE_ETHERNET
+
   #include "NativeEthernet.h"
-  #warning Using NativeEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
-  #define SHIELD_TYPE           "using NativeEthernet"  
-#else
+  
+#elif USE_ETHERNET_GENERIC
+
   #include <Ethernet_Generic_Impl.h>
   
   #include <EthernetClient.h>             // https://github.com/khoih-prog/Ethernet_Generic
   #include <EthernetServer.h>             // https://github.com/khoih-prog/Ethernet_Generic
   #include <EthernetUdp.h>                // https://github.com/khoih-prog/Ethernet_Generic
+  
 #endif
 
 ////////////////////////////////////////////////////////////////////////////
@@ -113,6 +117,8 @@ FtpServer::FtpServer( uint16_t _cmdPort, uint16_t _pasvPort )
   cmdPort = _cmdPort;
   pasvPort = _pasvPort;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 void FtpServer::init( IPAddress _localIP )
 {
@@ -128,6 +134,8 @@ void FtpServer::init( IPAddress _localIP )
   iniVariables();
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 void FtpServer::credentials( const char * _user, const char * _pass )
 {
   if ( strlen( _user ) > 0 && strlen( _user ) < FTP_CRED_SIZE )
@@ -136,6 +144,8 @@ void FtpServer::credentials( const char * _user, const char * _pass )
   if ( strlen( _pass ) > 0 && strlen( _pass ) < FTP_CRED_SIZE )
     strcpy( pass, _pass );
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 void FtpServer::iniVariables()
 {
@@ -151,6 +161,8 @@ void FtpServer::iniVariables()
   rnfrCmd = false;
   transferStage = FTP_Close;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 uint8_t FtpServer::service()
 {
@@ -233,6 +245,8 @@ uint8_t FtpServer::service()
   return cmdStage | ( transferStage << 3 ) | ( dataConn << 6 );
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 void FtpServer::clientConnected()
 {
   FTP_LOGWARN(F(" Client connected!"));
@@ -242,6 +256,8 @@ void FtpServer::clientConnected()
 
   iCL = 0;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 void FtpServer::disconnectClient()
 {
@@ -257,6 +273,8 @@ void FtpServer::disconnectClient()
   if ( data )
     data.stop();
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 bool FtpServer::processCommand()
 {
@@ -440,15 +458,8 @@ bool FtpServer::processCommand()
     FTP_LOGWARN(F(" Connection management set to passive"));
     FTP_LOGWARN3(F(" Listening at "), dataIp, F(":"), dataPort);
     
-#if 1
     FtpOutCli << F("227 Entering Passive Mode") << F(" (")
               << dataIp << F(", port ") << dataPort << F(")") << endl;
-#else
-    FtpOutCli << F("227 Entering Passive Mode") << F(" (")
-              << int( dataIp[0]) << F(",") << int( dataIp[1]) << F(",")
-              << int( dataIp[2]) << F(",") << int( dataIp[3]) << F(",")
-              << ( dataPort >> 8 ) << F(",") << ( dataPort & 255 ) << F(")") << endl;
-#endif
        
     dataConn = FTP_Pasive;
   }
@@ -862,6 +873,8 @@ bool FtpServer::processCommand()
   return true;
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 int FtpServer::dataConnect( bool out150 )
 {
   if ( ! data.connected())
@@ -889,6 +902,8 @@ int FtpServer::dataConnect( bool out150 )
   return data.connected();
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 bool FtpServer::dataConnected()
 {
   if ( data.connected())
@@ -900,6 +915,8 @@ bool FtpServer::dataConnected()
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 bool FtpServer::openDir( FTP_DIR * pdir )
 {
@@ -915,6 +932,8 @@ bool FtpServer::openDir( FTP_DIR * pdir )
 
   return openD;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 bool FtpServer::doRetrieve()
 {
@@ -938,6 +957,8 @@ bool FtpServer::doRetrieve()
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 bool FtpServer::doStore()
 {
@@ -976,6 +997,8 @@ bool FtpServer::doStore()
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 bool FtpServer::doList()
 {
@@ -1025,6 +1048,8 @@ bool FtpServer::doList()
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 bool FtpServer::doMlsd()
 {
@@ -1081,6 +1106,8 @@ bool FtpServer::doMlsd()
   return false;
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 void FtpServer::closeTransfer()
 {
   uint32_t deltaT = (int32_t) ( millis() - millisBeginTrans );
@@ -1100,6 +1127,8 @@ void FtpServer::closeTransfer()
   data.stop();
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 void FtpServer::abortTransfer()
 {
   if ( transferStage != FTP_Close )
@@ -1116,6 +1145,8 @@ void FtpServer::abortTransfer()
   //  if( data.connected())
   data.stop();
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 // Read a char from client connected to ftp server
 //
@@ -1202,6 +1233,8 @@ int8_t FtpServer::readChar()
   return rc;
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 bool FtpServer::haveParameter()
 {
   if ( parameter != NULL && strlen( parameter ) > 0 )
@@ -1211,6 +1244,8 @@ bool FtpServer::haveParameter()
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 // Make complete path/name from cwdName and param
 //
@@ -1271,6 +1306,8 @@ bool FtpServer::makePath( char * fullName, char * param )
   return true;
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 bool FtpServer::makeExistsPath( char * path, char * param )
 {
   if ( ! makePath( path, param ))
@@ -1283,6 +1320,8 @@ bool FtpServer::makeExistsPath( char * path, char * param )
 
   return false;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 // Calculate year, month, day, hour, minute and second
 //   from first parameter sent by MDTM command (YYYYMMDDHHMMSS)
@@ -1352,6 +1391,8 @@ uint8_t FtpServer::getDateTime( char * dt, uint16_t * pyear, uint8_t * pmonth, u
   return i;
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 // Create string YYYYMMDDHHMMSS from date and time
 //
 // parameters:
@@ -1390,6 +1431,8 @@ bool FtpServer::isDir( char * path )
 #endif
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 bool FtpServer::timeStamp( char * path, uint16_t year, uint8_t month, uint8_t day,
                            uint8_t hour, uint8_t minute, uint8_t second )
 {
@@ -1409,6 +1452,8 @@ bool FtpServer::timeStamp( char * path, uint16_t year, uint8_t month, uint8_t da
 #endif
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 bool FtpServer::getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime )
 {
 #if FTP_FILESYST == FTP_FATFS
@@ -1426,6 +1471,8 @@ bool FtpServer::getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime 
   return res;
 #endif
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 // Assume SD library is SdFat (or family) and file is open
 
@@ -1447,5 +1494,7 @@ bool FtpServer::getFileModTime( uint16_t * pdate, uint16_t * ptime )
 #endif
 }
 #endif
+
+////////////////////////////////////////////////////////////////////////////
 
 #endif    // FTP_SERVER_TEENSY41_IMPL_H

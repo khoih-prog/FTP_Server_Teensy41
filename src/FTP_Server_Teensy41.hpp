@@ -38,6 +38,8 @@
  **                       DEFINITIONS FOR FTP SERVER                           **
  **                                                                            **
  *******************************************************************************/
+ 
+#pragma once
 
 #ifndef FTP_SERVER_TEENSY41_HPP
 #define FTP_SERVER_TEENSY41_HPP
@@ -45,25 +47,38 @@
 #include "FTP_Server_Teensy41_Config.h"
 #include <SPI.h>
 
+////////////////////////////////////////////////////////////////////////////
+
 #if USE_QN_ETHERNET
   #include "QNEthernet.h"       // https://github.com/ssilverman/QNEthernet
   using namespace qindesign::network;
-  #warning Using QNEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
-  #define SHIELD_TYPE           "using QNEthernet"
+  
+  #if (_FTP_SERVER_LOGLEVEL_>2)
+    #warning Using QNEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
+  #endif
+  
+  //#define SHIELD_TYPE           "using QNEthernet"
 #elif USE_NATIVE_ETHERNET
   #include "NativeEthernet.h"
-  #warning Using NativeEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
-  #define SHIELD_TYPE           "using NativeEthernet"  
+  
+  #if (_FTP_SERVER_LOGLEVEL_>2)
+    #warning Using NativeEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
+  #endif
+  
+  //#define SHIELD_TYPE           "using NativeEthernet"  
 #elif USE_ETHERNET_GENERIC
   #include "Ethernet_Generic.hpp"
 #else
   #error Must select USE_QN_ETHERNET, USE_NATIVE_ETHERNET or USE_ETHERNET_GENERIC
 #endif
 
+////////////////////////////////////////////////////////////////////////////
+
 #include <sdios.h>
 
 #if (FTP_FILESYST == FTP_SDFAT1)
 
+	#include <SD.h>
   #include <SdFat.h>
   #define FTP_FS             SD
   #define FTP_FILE          SdFile
@@ -72,35 +87,15 @@
   
 #elif (FTP_FILESYST == FTP_SDFAT2)
 
+	#include <SD.h>
   #include <SdFat.h> 
   #define FTP_FS            SD.sdfs
   #define FTP_FILE          SdFile
   #define FTP_DIR           SdFile
   
-#elif FTP_FILESYST == FTP_SPIFM
-
-  #include <SdFat.h>
-  #include <Adafruit_SPIFlash.h>
-  #define FTP_FS            fatfs
-  #define FTP_FILE          File
-  #define FTP_DIR           File
-  extern FatFileSystem      FTP_FS;
-  extern Adafruit_SPIFlash flash;
-  
-#elif FTP_FILESYST == FTP_FATFS
-
-  #include <FatFs.h>
-  #define FTP_FS            sdff
-  #define FTP_FILE          FileFs
-  #define FTP_DIR           DirFs
-  extern FatFsClass         FTP_FS;
-  #define O_READ            FA_READ
-  #define O_WRITE           FA_WRITE
-  #define O_RDWR            FA_READ | FA_WRITE
-  #define O_CREAT           FA_CREATE_ALWAYS
-  #define O_APPEND          FA_OPEN_APPEND
-  
 #endif
+
+////////////////////////////////////////////////////////////////////////////
 
 #if USE_QN_ETHERNET
   using namespace qindesign::network;
@@ -127,6 +122,8 @@
   #define ParameterIs( a )  ( ! strcmp_PF( parameter, PSTR( a )))
   
 #endif
+
+////////////////////////////////////////////////////////////////////////////
 
 #define FTP_USER              "teensy4x"      // Default user'name
 #define FTP_PASS              "ftp_test"      // Default password
@@ -141,6 +138,8 @@
 #define FTP_FIL_SIZE          FF_MAX_LFN      // max size of a file name 
 #define FTP_CRED_SIZE         16              // max size of username and password
 #define FTP_NULLIP()          IPAddress(0,0,0,0)
+
+////////////////////////////////////////////////////////////////////////////
 
 enum ftpCmd { FTP_Stop = 0,       //  In this stage, stop any connection
               FTP_Init,           //  initialize some variables
@@ -162,6 +161,8 @@ enum ftpDataConn { FTP_NoConn = 0,// No data connexion
                    FTP_Pasive,    // Pasive type
                    FTP_Active
                  };  // Active type
+
+////////////////////////////////////////////////////////////////////////////
 
 /*
   class FtpFile : public SdFile
@@ -339,5 +340,7 @@ class FtpServer
              millisBeginTrans,          // store time of beginning of a transaction
              bytesTransfered;           //
 };
+
+////////////////////////////////////////////////////////////////////////////
 
 #endif // FTP_SERVER_TEENSY41_HPP

@@ -39,8 +39,12 @@
  **                                                                            **
  *******************************************************************************/
 
+#pragma once
+
 #ifndef FTP_SERVER_TEENSY41_CONFIG_H
 #define FTP_SERVER_TEENSY41_CONFIG_H
+
+////////////////////////////////////////////////////////////////////////////
 
 // Files system
 #define FTP_SDFAT1     0     // Library SdFat version 1.4.x
@@ -51,31 +55,19 @@
 
 // Select one of the previous files system as default
 #if !defined(FTP_FILESYST)
-#define FTP_FILESYST      FTP_SDFAT2
+  #define FTP_FILESYST      FTP_SDFAT2
 #endif
-
-
-// Uncomment to print debugging info to console attached to Arduino
-#define FTP_DEBUG
-
-
-// Uncomment to print additional info
-//#define FTP_DEBUG1
-
 
 // Redirect debug info to console or other port
 #define FTP_SERIAL Serial
 // #define FTP_SERIAL SerialUSB
 
-
 // Disconnect client after 5 minutes of inactivity (expressed in seconds)
 #define FTP_TIME_OUT      (5 * 60)
-
 
 // Wait for authentication for 10 seconds (expressed in seconds)
 //#define FTP_AUTH_TIME_OUT 10
 #define FTP_AUTH_TIME_OUT 60
-
 
 // Size of file buffer for read/write
 // Transfer speed depends of this value
@@ -85,6 +77,5 @@
   #warning Using default FTP_BUF_SIZE = 2048
   #define FTP_BUF_SIZE 2048 //1024 // 512
 #endif
-
 
 #endif // FTP_SERVER_TEENSY41_CONFIG_H
