@@ -1,0 +1,56 @@
+#######################################
+# Syntax Coloring Map For Ultrasound
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+FtpServer	KEYWORD1
+
+ftpCmd	KEYWORD1
+ftpTransfer	KEYWORD1
+ftpDataConn	KEYWORD1
+
+FTP_SERVER	KEYWORD1
+FTP_CLIENT	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+init KEYWORD2
+credentials KEYWORD2
+service  KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+FTP_SERVER_TEENSY41_VERSION  LITERAL1
+FTP_SERVER_TEENSY41_VERSION_MAJOR  LITERAL1
+FTP_SERVER_TEENSY41_VERSION_MINOR  LITERAL1
+FTP_SERVER_TEENSY41_VERSION_PATCH  LITERAL1
+FTP_SERVER_TEENSY41_VERSION_INT  LITERAL1
+
+SHIELD_TYPE	LITERAL1
+
+
+FTP_FS	LITERAL1
+FTP_FILE	LITERAL1
+
+FTP_USER	LITERAL1
+FTP_PASS	LITERAL1
+
+FTP_CMD_PORT	LITERAL1
+FTP_DATA_PORT_DFLT	LITERAL1
+FTP_DATA_PORT_PASV	LITERAL1
+
+FF_MAX_LFN	LITERAL1
+FTP_CMD_SIZE	LITERAL1
+FTP_CWD_SIZE	LITERAL1
+FTP_FIL_SIZE	LITERAL1
+FTP_CRED_SIZE	LITERAL1
+
+FTP_DIR	LITERAL1
+

@@ -1,0 +1,39 @@
+{
+  "name":"FTP_Server_Teensy41",
+  "version": "1.0.0",
+  "description":"FTP Server for Teensy 4.x using SD, LittleFS, etc. with QNEthernet, NativeEthernet or W5x00 using Ethernet_Generic Library",
+  "keywords":"communication, data, ftp, server, ftp-server, ethernet, teensy, teensy41, teensy40, qnethernet, lwip, native-ethernet, w5x00, w5100, w5500, ethernet-generic",
+  "authors": [
+    {
+      "name": "Jean-Michel Gallego",
+      "url":   "https://github.com/gallegojm"
+    },
+    {
+      "name":  "Khoi Hoang",
+      "url":   "https://github.com/khoih-prog",
+      "email": "khoih.prog@gmail.com",
+      "maintainer": true
+    } 
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/khoih-prog/FTP_Server_Teensy41.git"
+  },
+  "dependencies": 
+  [
+  ],
+  "homepage": "https://github.com/khoih-prog/FTP_Server_Teensy41",
+  "export": {
+    "exclude": [
+      "linux",
+      "extras",
+      "tests"
+    ]
+  },
+  "license": "GPL-3.0",
+  "frameworks": "*",
+  "platforms": ["teensy", "avr"],
+  "examples": "examples/*/*/*.ino",
+  "headers": ["FTP_Server_Teensy41.h", "FTP_Server_Teensy41.hpp"]
+}
