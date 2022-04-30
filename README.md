@@ -31,8 +31,8 @@
   * [ 2. multiFileProject](examples/multiFileProject)
 * [Example FTP_Server_SDFAT2](#example-FTP_Server_SDFAT2)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
-  * [1. FTP_Server_SDFAT2 on Teensy4.1 QNEthernet](#1-FTP_Server_SDFAT2-on-Teensy41-QNEthernet)
-  * [2. FTP_Server_SDFAT2 on Teensy4.1 NativeEthernet](#2-FTP_Server_SDFAT2-on-Teensy41-NativeEthernet)
+  * [1. FTP_Server_SDFAT2 on Teensy4.1 with QNEthernet](#1-FTP_Server_SDFAT2-on-Teensy41-with-QNEthernet)
+  * [2. FTP_Server_SDFAT2 on Teensy4.1 with NativeEthernet](#2-FTP_Server_SDFAT2-on-Teensy41-with-NativeEthernet)
   * [3. FTP_Server_SDFAT2 on TEENSY 4.0 with W5x00 using Ethernet_Generic Library](#3-FTP_Server_SDFAT2-on-TEENSY-40-with-W5x00-using-Ethernet_Generic-Library)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
@@ -69,7 +69,8 @@ This [**FTP_Server_Teensy41 library**](https://github.com/khoih-prog/FTP_Server_
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1
  3. [`QNEthernet Library version v0.14.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet.
- 4. [`Ethernet_Generic library v2.1.0+`](https://github.com/khoih-prog/Ethernet_Generic) to use **W5x00**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Ethernet_Generic.svg?)](https://www.ardu-badge.com/Ethernet_Generic).
+ 4. [`NativeEthernet Library version stable111+`](https://github.com/vjmuzik/NativeEthernet) for Teensy 4.1 built-in Ethernet.
+ 5. [`Ethernet_Generic library v2.1.0+`](https://github.com/khoih-prog/Ethernet_Generic) to use **W5x00**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Ethernet_Generic.svg?)](https://www.ardu-badge.com/Ethernet_Generic).
 
 ---
 
@@ -154,7 +155,7 @@ https://github.com/khoih-prog/FTP_Server_Teensy41/blob/5916a2c287b19b899eae9456c
 
 ### Debug Terminal Output Samples
 
-#### 1. FTP_Server_SDFAT2 on TEENSY 4.1 with using QNEthernet
+#### 1. FTP_Server_SDFAT2 on TEENSY 4.1 with QNEthernet
 
 Following is debug terminal output when running example [FTP_Server_SDFAT2](examples/FTP_Server_SDFAT2) on Teensy4.1 using Built-in Ethernet and QNEthernet Library demonstrate the operation of FTP Server and SD Card using SDFat2.
 
@@ -285,7 +286,7 @@ QUIT
 ---
 
 
-#### 3. FTP_Server_SDFAT2 on TEENSY 4.0 with W5x00 using Ethernet_Generic Library with Large Buffer
+#### 3. FTP_Server_SDFAT2 on TEENSY 4.0 with W5x00 using Ethernet_Generic Library
 
 Following is debug terminal output when running example [FTP_Server_SDFAT2](examples/FTP_Server_SDFAT2) on Teensy4.0 using W5x00 using Ethernet_Generic Library with Large Buffer.
 
