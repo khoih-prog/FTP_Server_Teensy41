@@ -131,7 +131,6 @@
 #define FTP_CMD_PORT          21              // Command port on wich server is listening
 #define FTP_DATA_PORT_DFLT    20              // Default data port in active mode
 #define FTP_DATA_PORT_PASV    55600           // Data port in passive mode
-//#define FTP_DATA_PORT_PASV    50009           // Data port in passive mode
 
 #define FF_MAX_LFN            255             // max size of a long file name 
 #define FTP_CMD_SIZE          FF_MAX_LFN+8    // max size of a command
