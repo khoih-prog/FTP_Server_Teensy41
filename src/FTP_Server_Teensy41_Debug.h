@@ -32,7 +32,7 @@
 // 4: DEBUG: errors, warnings, informational and debug
 
 #ifndef _FTP_SERVER_LOGLEVEL_
-  #define _FTP_SERVER_LOGLEVEL_       3
+  #define _FTP_SERVER_LOGLEVEL_       0
 #endif
 
 /////////////////////////////////////////////////////////
