@@ -216,8 +216,6 @@ uint8_t FtpServer::service()
     {
       if ( ! doRetrieve())
         transferStage = FTP_Close;
-//millisDelay = millis() + 50;     // delay of 100 ms
-
     }
     else if ( transferStage == FTP_Store ) // Store data
     {
