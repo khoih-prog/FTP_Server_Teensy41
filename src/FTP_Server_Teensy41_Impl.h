@@ -940,21 +940,27 @@ bool FtpServer::doRetrieve()
   if ( ! dataConnected())
   {
     file.close();
-
     return false;
   }
+  // Find available space in data.write() buffer.
+  int spaceLeft = data.availableForWrite();
+  // Get remaining bytes to read from file.
+  int32_t leftToXfer = file.available();
 
-  int16_t nb = file.read( buf, FTP_BUF_SIZE );
+  if (spaceLeft <= 0) {
+    return true; // Return true if no space available.
+  }
 
-  if ( nb > 0 )
-  {
-    data.write( buf, nb );
+  // Calculate read size.
+  // Base the amount to read on the space available in the
+  // data.write() buffer. 
+  if(leftToXfer) {
+    int32_t nb = file.read( buf,(spaceLeft <= FTP_BUF_SIZE) ? spaceLeft : FTP_BUF_SIZE);
+    data.write(buf, nb);
     bytesTransfered += nb;
     return true;
   }
-
   closeTransfer();
-
   return false;
 }
 
