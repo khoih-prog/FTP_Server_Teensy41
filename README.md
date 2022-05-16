@@ -162,7 +162,7 @@ Following is debug terminal output when running example [FTP_Server_SDFAT2](exam
 
 ```
 Starting FTP_Server_SDFAT2 on TEENSY 4.1 with QNEthernet
-FTP_Server_Teensy41 v1.0.0
+FTP_Server_Teensy41 v1.1.0
 Initializing SD card...
 Wiring is correct and a card is present.
 
@@ -233,7 +233,7 @@ Following is debug terminal output when running example [FTP_Server_SDFAT2](exam
 
 ```
 Starting FTP_Server_SDFAT2 on TEENSY 4.1 with NativeEthernet
-FTP_Server_Teensy41 v1.0.0
+FTP_Server_Teensy41 v1.1.0
 Initializing SD card...
 Wiring is correct and a card is present.
 
@@ -292,7 +292,7 @@ Following is debug terminal output when running example [FTP_Server_SDFAT2](exam
 
 ```
 Starting FTP_Server_SDFAT2 on TEENSY 4.0 with W5x00 using Ethernet_Generic Library with Large Buffer
-FTP_Server_Teensy41 v1.0.0
+FTP_Server_Teensy41 v1.1.0
 ======== USE_ETHERNET_GENERIC ========
 [FTP] Default SPI pinout:
 [FTP] MOSI: 11
@@ -361,7 +361,7 @@ Submit issues to: [FTP_Server_Teensy41 issues](https://github.com/khoih-prog/FTP
  2. Support SD card and SDFat1, SDFat2
  3. Add debugging features.
  4. Add Table-of-Contents and Version String
- 
+ 5. Fix bug incomplete downloads from server to client
 
 ---
 ---
@@ -370,11 +370,12 @@ Submit issues to: [FTP_Server_Teensy41 issues](https://github.com/khoih-prog/FTP
 ### Contributions and Thanks
 
 1. Based on and modified from [Jean-Michel Gallego's Arduino-Ftp-Server library](https://github.com/gallegojm/Arduino-Ftp-Server)
-
+2. Thanks to [Warren Watson](https://github.com/wwatson4506) to make PR in [Incomplete downloads from server to client. #2](https://github.com/khoih-prog/FTP_Server_Teensy41/pull/2) leading to the new version v1.1.0 to fix bug incomplete downloads from server to client.
 
 <table>
   <tr>
     <td align="center"><a href="https://github.com/gallegojm"><img src="https://github.com/gallegojm.png" width="100px;" alt="gallegojm"/><br /><sub><b>⭐️ Jean-Michel Gallego</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/wwatson4506"><img src="https://github.com/wwatson4506.png" width="100px;" alt="wwatson4506"/><br /><sub><b>Warren Watson</b></sub></a><br /></td>
   </tr>
 </table>
 

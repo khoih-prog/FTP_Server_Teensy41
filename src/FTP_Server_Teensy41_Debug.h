@@ -6,11 +6,12 @@
   Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
   Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
   
-  Version: 1.0.0
-  
+  Version: 1.1.0
+
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
-  1.0.0   K Hoang      30/04/2022 Initial porting and coding for Teensy 4.1 using built-in QNEthernet, NativeEthernet 
+  1.0.0   K Hoang      30/04/2022 Initial porting and coding for Teensy 4.1 using built-in QNEthernet, NativeEthernet
+  1.1.0   K Hoang      16/05/2022 Fix bug incomplete downloads from server to client
   *****************************************************************************************************************************/
 
 #pragma once

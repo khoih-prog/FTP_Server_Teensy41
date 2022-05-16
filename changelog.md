@@ -13,12 +13,18 @@
 
 
 * [Changelog](#changelog)
+  * [Releases v1.1.0](#releases-v110)
   * [Releases v1.0.0](#releases-v100)
 
 ---
 ---
 
 ## Changelog
+
+### Releases v1.1.0
+
+1. Fix bug incomplete downloads from server to client. Check [Incomplete downloads from server to client. #2](https://github.com/khoih-prog/FTP_Server_Teensy41/pull/2)
+
 
 ### Releases v1.0.0
 

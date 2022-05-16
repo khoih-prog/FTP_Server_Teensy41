@@ -6,11 +6,12 @@
   Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
   Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
 
-  Version: 1.0.0
+  Version: 1.1.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      30/04/2022 Initial porting and coding for Teensy 4.1 using built-in QNEthernet, NativeEthernet
+  1.1.0   K Hoang      16/05/2022 Fix bug incomplete downloads from server to client
  ***********************************************************************************************************************/
 
 /*
@@ -935,34 +936,70 @@ bool FtpServer::openDir( FTP_DIR * pdir )
 
 ////////////////////////////////////////////////////////////////////////////
 
+#if 1
+
 bool FtpServer::doRetrieve()
 {
   if ( ! dataConnected())
   {
     file.close();
+    
     return false;
   }
+  
   // Find available space in data.write() buffer.
   int spaceLeft = data.availableForWrite();
   // Get remaining bytes to read from file.
   int32_t leftToXfer = file.available();
 
-  if (spaceLeft <= 0) {
+  if (spaceLeft <= 0) 
+  {
     return true; // Return true if no space available.
   }
 
   // Calculate read size.
   // Base the amount to read on the space available in the
   // data.write() buffer. 
-  if(leftToXfer) {
-    int32_t nb = file.read( buf,(spaceLeft <= FTP_BUF_SIZE) ? spaceLeft : FTP_BUF_SIZE);
+  if (leftToXfer) 
+  {
+    int32_t nb = file.read( buf,(spaceLeft <= FTP_BUF_SIZE) ? spaceLeft : FTP_BUF_SIZE); 
     data.write(buf, nb);
+    bytesTransfered += nb;
+    
+    return true;
+  }
+  
+  closeTransfer();
+  
+  return false;
+}
+
+#else
+
+bool FtpServer::doRetrieve()
+{
+  if ( ! dataConnected())
+  {
+    file.close();
+
+    return false;
+  }
+
+  int16_t nb = file.read( buf, FTP_BUF_SIZE );
+
+  if ( nb > 0 )
+  {
+    data.write( buf, nb );
     bytesTransfered += nb;
     return true;
   }
+
   closeTransfer();
+
   return false;
 }
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////
 

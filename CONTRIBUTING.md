@@ -34,7 +34,7 @@ Arduino IDE version: 1.8.19
 Teensyduino core v1.56
 Teensy 4.1 using QNEthernet v0.14.0
 OS: Ubuntu 20.04 LTS
-Linux xy-Inspiron-3593 5.13.0-40-generic #45~20.04.1-Ubuntu SMP Mon Apr 4 09:38:31 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+Linux xy-Inspiron-3593 5.13.0-41-generic #46~20.04.1-Ubuntu SMP Wed Apr 20 13:16:21 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
 
 Context:
 I encountered a crash while using TimerInterrupt.
