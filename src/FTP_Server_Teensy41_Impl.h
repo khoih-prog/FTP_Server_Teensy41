@@ -936,8 +936,6 @@ bool FtpServer::openDir( FTP_DIR * pdir )
 
 ////////////////////////////////////////////////////////////////////////////
 
-#if 1
-
 bool FtpServer::doRetrieve()
 {
   if ( ! dataConnected())
@@ -973,33 +971,6 @@ bool FtpServer::doRetrieve()
   
   return false;
 }
-
-#else
-
-bool FtpServer::doRetrieve()
-{
-  if ( ! dataConnected())
-  {
-    file.close();
-
-    return false;
-  }
-
-  int16_t nb = file.read( buf, FTP_BUF_SIZE );
-
-  if ( nb > 0 )
-  {
-    data.write( buf, nb );
-    bytesTransfered += nb;
-    return true;
-  }
-
-  closeTransfer();
-
-  return false;
-}
-
-#endif
 
 ////////////////////////////////////////////////////////////////////////////
 
