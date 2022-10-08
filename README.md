@@ -366,7 +366,7 @@ Submit issues to: [FTP_Server_Teensy41 issues](https://github.com/khoih-prog/FTP
  4. Add Table-of-Contents and Version String
  5. Fix bug incomplete downloads from server to client
  6. Add support to `WiFiNINA`, such as `Adafruit Airlift Featherwing`
- 7. Configurable `user_name` length to 63 and `user_password` to 127
+ 7. Configurable `user_name` length to max 63 and `user_password` to max 127
 
 
 ---
