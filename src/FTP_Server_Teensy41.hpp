@@ -6,12 +6,14 @@
   Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
   Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
   
-  Version: 1.1.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      30/04/2022 Initial porting and coding for Teensy 4.1 using built-in QNEthernet, NativeEthernet
   1.1.0   K Hoang      16/05/2022 Fix bug incomplete downloads from server to client
+  1.2.0   K Hoang      24/05/2022 Add support to WiFiNINA, such as Adafruit Airlift Featherwing. 
+                                  Configurable user_name length to 63 and user_password to 127
  ***********************************************************************************************************************/
 
 /*
@@ -66,7 +68,16 @@
     #warning Using NativeEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
   #endif
   
-  //#define SHIELD_TYPE           "using NativeEthernet"  
+  //#define SHIELD_TYPE           "using NativeEthernet"
+  
+#elif USE_WIFI_NINA
+  #include "WiFiNINA_Generic.h"
+  
+  #if (_FTP_SERVER_LOGLEVEL_>2)
+    //#warning Using WiFiNINA_Generic lib for Teensy 4.1. Must also use Teensy Packages Patch or error
+    #warning Using WiFiNINA_Generic lib for Teensy 4.1. Must also update WiFiNINA_Pinout_Generic.h or error
+  #endif
+  
 #elif USE_ETHERNET_GENERIC
   #include "Ethernet_Generic.hpp"
 #else
@@ -79,7 +90,7 @@
 
 #if (FTP_FILESYST == FTP_SDFAT1)
 
-	#include <SD.h>
+  #include <SD.h>
   #include <SdFat.h>
   #define FTP_FS             SD
   #define FTP_FILE          SdFile
@@ -88,7 +99,7 @@
   
 #elif (FTP_FILESYST == FTP_SDFAT2)
 
-	#include <SD.h>
+  #include <SD.h>
   #include <SdFat.h> 
   #define FTP_FS            SD.sdfs
   #define FTP_FILE          SdFile
@@ -100,6 +111,8 @@
 
 #if USE_QN_ETHERNET
   using namespace qindesign::network;
+  
+  #define FTP_NETWORK       Ethernet
   #define FTP_SERVER        EthernetServer
   #define FTP_CLIENT        EthernetClient
   #define FTP_LOCALIP()     Ethernet.localIP()
@@ -108,14 +121,25 @@
   
 #elif USE_NATIVE_ETHERNET
 
+  #define FTP_NETWORK       Ethernet
   #define FTP_SERVER        EthernetServer
   #define FTP_CLIENT        EthernetClient
   #define FTP_LOCALIP()     Ethernet.localIP()
   #define CommandIs( a )    ( ! strcmp_PF( command, PSTR( a )))
   #define ParameterIs( a )  ( ! strcmp_PF( parameter, PSTR( a )))
-  
+
+#elif USE_WIFI_NINA
+
+  #define FTP_NETWORK       WiFi
+  #define FTP_SERVER        WiFiServer
+  #define FTP_CLIENT        WiFiClient
+  #define FTP_LOCALIP()     WiFi.localIP()
+  #define CommandIs( a )    ( ! strcmp_PF( command, PSTR( a )))
+  #define ParameterIs( a )  ( ! strcmp_PF( parameter, PSTR( a )))
+    
 #else
 
+  #define FTP_NETWORK       Ethernet
   #define FTP_SERVER        EthernetServer
   #define FTP_CLIENT        EthernetClient
   #define FTP_LOCALIP()     Ethernet.localIP()
@@ -136,8 +160,40 @@
 #define FF_MAX_LFN            255             // max size of a long file name 
 #define FTP_CMD_SIZE          FF_MAX_LFN+8    // max size of a command
 #define FTP_CWD_SIZE          FF_MAX_LFN+8    // max size of a directory name
-#define FTP_FIL_SIZE          FF_MAX_LFN      // max size of a file name 
-#define FTP_CRED_SIZE         16              // max size of username and password
+#define FTP_FIL_SIZE          FF_MAX_LFN      // max size of a file name
+
+#ifndef FTP_USER_NAME_LEN
+  #define FTP_USER_NAME_LEN   64
+  
+  #if (_FTP_SERVER_LOGLEVEL_ > 2)
+    #warning Using default FTP_USER_NAME_LEN == 64
+  #endif
+#else
+  #if (FTP_USER_NAME_LEN > 64)
+    #undef FTP_USER_NAME_LEN
+    
+    #define FTP_USER_NAME_LEN			64
+    
+    #warning Forcing FTP_USER_NAME_LEN == 64
+  #endif
+#endif
+
+#ifndef FTP_USER_PWD_LEN
+  #define FTP_USER_PWD_LEN    128
+  
+  #if (_FTP_SERVER_LOGLEVEL_ > 2)
+    #warning Using default FTP_USER_PWD_LEN == 128
+  #endif
+#else
+  #if (FTP_USER_PWD_LEN > 128)
+    #undef FTP_USER_PWD_LEN
+    
+    #define FTP_USER_PWD_LEN			128
+    
+    #warning Forcing FTP_USER_PWD_LEN == 128
+  #endif
+#endif
+ 
 #define FTP_NULLIP()          IPAddress(0,0,0,0)
 
 ////////////////////////////////////////////////////////////////////////////
@@ -205,8 +261,10 @@ class FtpServer
                          uint8_t * phour, uint8_t * pminute, uint8_t * second );
 
     char *  makeDateTimeStr( char * tstr, uint16_t date, uint16_t time );
+    
     bool    timeStamp( char * path, uint16_t year, uint8_t month, uint8_t day,
                        uint8_t hour, uint8_t minute, uint8_t second );
+                       
     bool    getFileModTime( char * path, uint16_t * pdate, uint16_t * ptime );
 
 #if FTP_FILESYST != FTP_FATFS
@@ -325,8 +383,10 @@ class FtpServer
     char     cmdLine [ FTP_CMD_SIZE ];  // where to store incoming char from client
     char     cwdName [ FTP_CWD_SIZE ];  // name of current directory
     char     rnfrName[ FTP_CWD_SIZE ];  // name of file for RNFR command
-    char     user[ FTP_CRED_SIZE ];     // user name
-    char     pass[ FTP_CRED_SIZE ];     // password
+    
+    char     user[ FTP_USER_NAME_LEN ]; // user name
+    char     pass[ FTP_USER_PWD_LEN ];  // password
+    
     char     command[ 5 ];              // command sent by client
     bool     rnfrCmd;                   // previous command was RNFR
     char *   parameter;                 // point to begin of parameters sent by client

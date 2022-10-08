@@ -6,12 +6,14 @@
   Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
   Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
   
-  Version: 1.1.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      30/04/2022 Initial porting and coding for Teensy 4.1 using built-in QNEthernet, NativeEthernet
   1.1.0   K Hoang      16/05/2022 Fix bug incomplete downloads from server to client
+  1.2.0   K Hoang      24/05/2022 Add support to WiFiNINA, such as Adafruit Airlift Featherwing. 
+                                  Configurable user_name length to 63 and user_password to 127
  ***********************************************************************************************************************/
 
 /*
@@ -56,7 +58,7 @@
 
 // Select one of the previous files system as default
 #if !defined(FTP_FILESYST)
-  #define FTP_FILESYST      FTP_SDFAT2
+  #define FTP_FILESYST        FTP_SDFAT2
 #endif
 
 // Redirect debug info to console or other port
@@ -64,19 +66,28 @@
 // #define FTP_SERIAL SerialUSB
 
 // Disconnect client after 5 minutes of inactivity (expressed in seconds)
-#define FTP_TIME_OUT      (5 * 60)
+#define FTP_TIME_OUT          (5 * 60)
 
 // Wait for authentication for 10 seconds (expressed in seconds)
 //#define FTP_AUTH_TIME_OUT 10
-#define FTP_AUTH_TIME_OUT 60
+#define FTP_AUTH_TIME_OUT     60
 
 // Size of file buffer for read/write
 // Transfer speed depends of this value
 // Best value depends on many factors: SD card, client side OS, ...
 // But it can be reduced to 512 if memory usage is critical.
 #if ( !defined(FTP_BUF_SIZE) || (FTP_BUF_SIZE < 2048) )
-  #warning Using default FTP_BUF_SIZE = 2048
-  #define FTP_BUF_SIZE 2048 //1024 // 512
+  #if(_FTP_SERVER_LOGLEVEL_>2)
+    #warning Using default FTP_BUF_SIZE = 2048
+  #endif
+  
+  #define FTP_BUF_SIZE        2048 //1024 // 512
+#endif
+
+#if !defined(PASV_RESPONSE_STYLE_NEW)
+  // True  => "227 Entering Passive Mode (192,168,2,112,157,218)"
+  // False => "227 Entering Passive Mode (4043483328, port 55600)"
+  #define PASV_RESPONSE_STYLE_NEW       true
 #endif
 
 #endif // FTP_SERVER_TEENSY41_CONFIG_H

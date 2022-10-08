@@ -20,14 +20,16 @@
     // For Teensy 4.1
     #define BOARD_TYPE      "TEENSY 4.1"
     // Use true for QNEthernet or NativeEthernet Library, and false to use other Ethernet_Generic library
-    #define USE_QN_ETHERNET         true
+    #define USE_QN_ETHERNET         false
     #define USE_NATIVE_ETHERNET     false
+    #define USE_WIFI_NINA           true // Added 05-17-22 WEW
   #else
     // For Teensy 4.0
     #define BOARD_TYPE      "TEENSY 4.0"
     // Use false for QNEthernet and NativeEthernet Library, and to use other Ethernet_Generic library
     #define USE_QN_ETHERNET         false
     #define USE_NATIVE_ETHERNET     false
+    #define USE_WIFI_NINA           false // Added 05-17-22 WEW
   #endif
 #else
   #error Only Teensy 4.1 supported
@@ -57,6 +59,25 @@
   //#warning Using NativeEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
   #define SHIELD_TYPE           "NativeEthernet"
   
+#elif USE_WIFI_NINA
+   //#include "WiFiNINA.h"
+   #include "WiFiNINA_Generic.h"
+   #include "SPI.h"
+   #include "arduino_secrets.h" 
+
+   // T4.1 SPI pin defs for WiFiNINA AirLift. To update WiFiNINA_Pinout_Generic.h using this info
+   //#warning Using WiFiNINA_Generic lib for Teensy 4.1. Must also update WiFiNINA_Pinout_Generic.h or error
+   
+   //#define SPIWIFI       SPI  // The SPI port
+   //#define SPIWIFI_SS     5   // Chip select pin
+   //#define ESP32_RESETN   6   // Reset pin
+   //#define SPIWIFI_ACK    9   // a.k.a BUSY or READY pin
+   //#define ESP32_GPIO0   -1
+   ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
+   char ssid[] = SECRET_SSID;        // your network SSID (name)
+   char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
+  #define SHIELD_TYPE           "WiFiNINA"
+
 #elif USE_ETHERNET_GENERIC
 
   #include <SPI.h>
@@ -110,15 +131,15 @@
 
 #else
 
-  #define USING_DHCP    false   //true
+  #define USING_DHCP    true   //true
   
   #if !USING_DHCP
     // Set the static IP address to use if the DHCP fails to assign
-    IPAddress myIP(192, 168, 2, 241);
+    IPAddress myIP(192, 168, 0, 114);
     IPAddress myNetmask(255, 255, 255, 0);
-    IPAddress myGW(192, 168, 2, 1);
+    IPAddress myGW(192, 168, 0, 1);
     //IPAddress mydnsServer(192, 168, 2, 1);
-    IPAddress mydnsServer(8, 8, 8, 8);
+    IPAddress mydnsServer(192, 168, 0, 1);
   #endif
 
 #endif

@@ -12,11 +12,10 @@
 #include <SD.h>
 #include <SPI.h>
 
-#define PASV_RESPONSE_STYLE_NEW       true
 #define FTP_FILESYST                  FTP_SDFAT2
 
 // Default 2048
-#define FTP_BUF_SIZE                  8192
+#define FTP_BUF_SIZE                  4096
 
 #define FTP_USER_NAME_LEN             64        // Max permissible and default are 64
 #define FTP_USER_PWD_LEN             128        // Max permissible and default are 128
@@ -58,19 +57,49 @@ SdFile root;
 #define FTP_ACCOUNT       "teensy4x"
 #define FTP_PASSWORD      "ftp_test"
 
-void initEthernet()
+void initNetwork()
 {
 #if USE_QN_ETHERNET
   Serial.println(F("=========== USE_QN_ETHERNET ==========="));
 #elif USE_NATIVE_ETHERNET
-  Serial.println(F("======== USE_NATIVE_ETHERNET ========"));
+  Serial.println(F("========= USE_NATIVE_ETHERNET ========="));
 #elif USE_ETHERNET_GENERIC
-  Serial.println(F("======== USE_ETHERNET_GENERIC ========"));
+  Serial.println(F("========= USE_ETHERNET_GENERIC ========"));
+#elif USE_WIFI_NINA
+  Serial.println(F("============ USE_WIFI_NINA ============"));
 #else
   Serial.println(F("======================================="));
 #endif
 
-#if USE_NATIVE_ETHERNET
+#if USE_WIFI_NINA
+  // check for the WiFi module:
+  // Using this setPins() with Adafruit WiFiNINA library
+  //WiFi.setPins(SPIWIFI_SS, SPIWIFI_ACK, ESP32_RESETN, ESP32_GPIO0, &SPIWIFI);
+  
+  if (WiFi.status() == WL_NO_MODULE) 
+  {
+    Serial.println("Communication with WiFi module failed!");
+    // don't continue
+    while (true);
+  }
+ 
+  // Start the Ethernet connection, using DHCP
+  Serial.print("Initialize WiFi using DHCP => ");
+  WiFi.begin(ssid, pass);
+  Serial.println("");
+
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) 
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  
+  Serial.println("");
+  Serial.print("Connected to "); Serial.println(ssid);
+  Serial.print("IP address: ");  Serial.println(WiFi.localIP());
+
+#elif USE_NATIVE_ETHERNET
 
   // start the ethernet connection and the server:
   // Use DHCP dynamic IP and random mac
@@ -329,7 +358,7 @@ void setup()
 
   delay(500);
 
-  Serial.print(F("\nStarting FTP_Server_SDFAT2 on ")); Serial.print(BOARD_NAME);
+  Serial.print(F("\nStarting FTP_Server_SDFAT2_NINA on ")); Serial.print(BOARD_NAME);
   Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
   Serial.println(FTP_SERVER_TEENSY41_VERSION);
 
@@ -344,12 +373,12 @@ void setup()
 
   ////////////////////////////////////////////////////////////////
 
-  SDCardTest();
+//  SDCardTest();
 
   //////////////////////////////////////////////////////////////////
 #endif
 
-  initEthernet();
+  initNetwork();
 
   // Initialize the FTP server
   ftpSrv.init();

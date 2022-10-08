@@ -6,12 +6,14 @@
   Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
   Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
 
-  Version: 1.1.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      30/04/2022 Initial porting and coding for Teensy 4.1 using built-in QNEthernet, NativeEthernet
   1.1.0   K Hoang      16/05/2022 Fix bug incomplete downloads from server to client
+  1.2.0   K Hoang      24/05/2022 Add support to WiFiNINA, such as Adafruit Airlift Featherwing. 
+                                  Configurable user_name length to 63 and user_password to 127
  ***********************************************************************************************************************/
 
 /*
@@ -139,10 +141,10 @@ void FtpServer::init( IPAddress _localIP )
 
 void FtpServer::credentials( const char * _user, const char * _pass )
 {
-  if ( strlen( _user ) > 0 && strlen( _user ) < FTP_CRED_SIZE )
+  if ( strlen( _user ) > 0 && strlen( _user ) < FTP_USER_NAME_LEN )
     strcpy( user, _user );
 
-  if ( strlen( _pass ) > 0 && strlen( _pass ) < FTP_CRED_SIZE )
+  if ( strlen( _pass ) > 0 && strlen( _pass ) < FTP_USER_PWD_LEN )
     strcpy( pass, _pass );
 }
 
@@ -172,7 +174,10 @@ uint8_t FtpServer::service()
     if ( cmdStage == FTP_Stop )
     {
       if ( client.connected())
+      {
+        FTP_LOGDEBUG(F(" Client disconnected!"));
         disconnectClient();
+      }
 
       cmdStage = FTP_Init;
     }
@@ -188,7 +193,13 @@ uint8_t FtpServer::service()
     else if ( cmdStage == FTP_Client )    // Ftp server idle
     {
       if ( client && ! client.connected())
+      {
+        FTP_LOGDEBUG(F(" Client stopped!"));
+        
         client.stop();
+      }
+      
+      //FTP_LOGDEBUG(F("Accepting Client"));
 
       client = ftpServer.accept();
 
@@ -201,42 +212,86 @@ uint8_t FtpServer::service()
     }
     else if ( readChar() > 0 )            // got response
     {
+      FTP_LOGDEBUG(F("processCommand"));
+      
       processCommand();
 
       if ( cmdStage == FTP_Stop )
+      {
+        FTP_LOGDEBUG(F("Stage: FTP_Stop"));
+        
         millisEndConnection = millis() + 1000L * FTP_AUTH_TIME_OUT;  // wait authentication for 10 s.
+      }
       else if ( cmdStage < FTP_Cmd )
+      {
+        FTP_LOGDEBUG(F("Stage: cmdStage < FTP_Cmd => unrecognized command"));
+        
         millisDelay = millis() + 200;     // delay of 100 ms
+      }  
       else
+      {
+        FTP_LOGDEBUG(F("Stage: Connection OK, FTP_TIME_OUT = 5 minutes"));
+        
         millisEndConnection = millis() + 1000L * FTP_TIME_OUT;
+      }  
     }
     else if ( ! client.connected() )
+    {
+      FTP_LOGDEBUG(F("Stage: FTP_Init"));
+      
       cmdStage = FTP_Init;
+    }
 
     if ( transferStage == FTP_Retrieve )  // Retrieve data
     {
+      FTP_LOGDEBUG(F("transferStage: FTP_Retrieve"));
+      
       if ( ! doRetrieve())
+      {
+        FTP_LOGDEBUG(F("transferStage: FTP_Retrieve error or done, FTP_Close"));
+        
         transferStage = FTP_Close;
+      }  
     }
     else if ( transferStage == FTP_Store ) // Store data
     {
+      FTP_LOGDEBUG(F("transferStage: FTP_Store"));
+      
       if ( ! doStore())
+      {
+        FTP_LOGDEBUG(F("transferStage: FTP_Store error or done, FTP_Close"));
+        
         transferStage = FTP_Close;
+      }  
     }
     else if ( transferStage == FTP_List ||
               transferStage == FTP_Nlst)   // LIST or NLST
     {
+      FTP_LOGDEBUG(F("transferStage: FTP_List or FTP_NList"));
+      
       if ( ! doList())
+      {
+        FTP_LOGDEBUG(F("transferStage: FTP_List error or done, FTP_Close"));
+        
         transferStage = FTP_Close;
+      }  
     }
     else if ( transferStage == FTP_Mlsd ) // MLSD listing
     {
+      FTP_LOGDEBUG(F("transferStage: FTP_Mlsd"));
+      
       if ( ! doMlsd())
+      {
+        FTP_LOGDEBUG(F("transferStage: FTP_Mlsd error or done, FTP_Close"));
+        
         transferStage = FTP_Close;
+      } 
     }
     else if ( cmdStage > FTP_Client &&
               ! ((int32_t) ( millisEndConnection - millis() ) > 0 ))
     {
+      FTP_LOGDEBUG(F("Timeout => FTP_Stop"));
+      
       FtpOutCli << F("530 Timeout") << endl;
       millisDelay = millis() + 200;       // delay of 200 ms
       cmdStage = FTP_Stop;
@@ -262,7 +317,7 @@ void FtpServer::clientConnected()
 
 void FtpServer::disconnectClient()
 {
-	FTP_LOGWARN(F(" Disconnecting client"));
+  FTP_LOGWARN(F(" Disconnecting client"));
 
   abortTransfer();
 
@@ -290,6 +345,8 @@ bool FtpServer::processCommand()
   //
   if ( CommandIs( "USER" ))
   {
+    FTP_LOGDEBUG(F("Got USER"));
+    
     if ( ! strcmp( parameter, user ))
     {
       FtpOutCli << F("331 Ok. Password required") << endl;
@@ -307,6 +364,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "PASS" ))
   {
+    FTP_LOGDEBUG(F("Got PASS"));
+    
     if ( cmdStage != FTP_Pass )
     {
       FtpOutCli << F("503 ") << endl;
@@ -331,6 +390,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "FEAT" ))
   {
+    FTP_LOGDEBUG(F("Got FEAT"));
+    
     FtpOutCli << F("211-Extensions supported:") << endl;
     FtpOutCli << F(" MLST type*;modify*;size*;") << endl;
     FtpOutCli << F(" MLSD") << endl;
@@ -344,12 +405,18 @@ bool FtpServer::processCommand()
   //  AUTH - Not implemented
   //
   else if ( CommandIs( "AUTH" ))
+  {
+    FTP_LOGDEBUG(F("Got AUTH"));
+    
     FtpOutCli << F("502 ") << endl;
+  }  
   //
   //  Unrecognized commands at stage of authentication
   //
   else if ( cmdStage < FTP_Cmd )
   {
+    FTP_LOGDEBUG(F("Got Unrecognized conmmand"));
+    
     FtpOutCli << F("530 ") << endl;
     
     cmdStage = FTP_Stop;
@@ -366,6 +433,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "PWD" ) || ( CommandIs( "CWD" ) && ParameterIs( "." )))
   {
+    FTP_LOGDEBUG(F("Got PWD or CWD ."));
+    
     FtpOutCli << F("257 \"") << cwdName << F("\"") << F(" is your current directory") << endl;
   }
   //
@@ -373,6 +442,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "CDUP" ) || ( CommandIs( "CWD" ) && ParameterIs( ".." )))
   {
+    FTP_LOGDEBUG(F("Got CDUP or CWD .."));
+    
     bool ok = false;
 
     if ( strlen( cwdName ) > 1 )           // do nothing if cwdName is root
@@ -404,6 +475,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "CWD" ))
   {
+    FTP_LOGDEBUG(F("Got CWD"));
+    
     char path[ FTP_CWD_SIZE ];
 
     if ( haveParameter() && makeExistsPath( path ))
@@ -418,6 +491,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "QUIT" ))
   {
+    FTP_LOGDEBUG(F("Got QUIT"));
+    
     FtpOutCli << F("221 Goodbye") << endl;
     
     disconnectClient();
@@ -435,6 +510,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "MODE" ))
   {
+    FTP_LOGDEBUG(F("Got MODE"));
+    
     if ( ParameterIs( "S" ))
       FtpOutCli << F("200 S Ok") << endl;
     else
@@ -445,11 +522,13 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "PASV" ))
   {
+    FTP_LOGDEBUG(F("Got PASV"));
+    
     data.stop();
     dataServer.begin();
 
-    if ((((uint32_t) FTP_LOCALIP()) & ((uint32_t) Ethernet.subnetMask())) ==
-        (((uint32_t) client.remoteIP()) & ((uint32_t) Ethernet.subnetMask())))
+    if ((((uint32_t) FTP_LOCALIP()) & ((uint32_t) FTP_NETWORK.subnetMask())) ==
+        (((uint32_t) client.remoteIP()) & ((uint32_t) FTP_NETWORK.subnetMask())))
       dataIp = FTP_LOCALIP();
     else
       dataIp = localIp;
@@ -459,8 +538,27 @@ bool FtpServer::processCommand()
     FTP_LOGWARN(F(" Connection management set to passive"));
     FTP_LOGWARN3(F(" Listening at "), dataIp, F(":"), dataPort);
     
-    FtpOutCli << F("227 Entering Passive Mode") << F(" (")
+#if PASV_RESPONSE_STYLE_NEW    
+    // "227 Entering Passive Mode (192,168,2,241,217,48)"
+    //uint8_t* rawDataIP = dataIp.raw_address();
+    FTP_LOGDEBUG0(F("227 Entering Passive Mode ("));
+    FTP_LOGDEBUG0(dataIp[0]);       FTP_LOGDEBUG0(',');
+    FTP_LOGDEBUG0(dataIp[1]);       FTP_LOGDEBUG0(',');
+    FTP_LOGDEBUG0(dataIp[2]);       FTP_LOGDEBUG0(',');
+    FTP_LOGDEBUG0(dataIp[3]);       FTP_LOGDEBUG0(',');
+    FTP_LOGDEBUG0(dataPort >> 8);   FTP_LOGDEBUG0(',');
+    FTP_LOGDEBUG0(dataPort & 0xFF); FTP_LOGDEBUG0(")\n");
+    
+    FtpOutCli << F("227 Entering Passive Mode (") 
+              << dataIp[0] << ',' << dataIp[1] << ',' << dataIp[2] << ',' << dataIp[3] << ','               
+              << (dataPort >> 8) << ',' << (dataPort & 0xFF) << F(")") << endl;
+#else
+    
+    // "227 Entering Passive Mode (4043483328, port 55600)"
+    FtpOutCli << F("227 Entering Passive Mode (")
               << dataIp << F(", port ") << dataPort << F(")") << endl;
+
+#endif
        
     dataConn = FTP_Pasive;
   }
@@ -469,6 +567,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "PORT" ))
   {
+    FTP_LOGDEBUG(F("Got PORT"));
+    
     data.stop();
     // get IP of data client
     dataIp[ 0 ] = atoi( parameter );
@@ -500,6 +600,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "STRU" ))
   {
+    FTP_LOGDEBUG(F("Got STRU"));
+    
     if ( ParameterIs( "F" ))
       FtpOutCli << F("200 F Ok") << endl;
     // else if( ParameterIs( "R" ))
@@ -512,6 +614,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "TYPE" ))
   {
+    FTP_LOGDEBUG(F("Got TYPE"));
+    
     if ( ParameterIs( "A" ))
       FtpOutCli << F("200 TYPE is now ASCII") << endl;
     else if ( ParameterIs( "I" ))
@@ -531,6 +635,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "ABOR" ))
   {
+    FTP_LOGDEBUG(F("Got ABOR"));
+    
     abortTransfer();
     FtpOutCli << F("226 Data connection closed") << endl;
   }
@@ -539,6 +645,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "DELE" ))
   {
+    FTP_LOGDEBUG(F("Got DELE"));
+    
     char path[ FTP_CWD_SIZE ];
 
     if ( haveParameter() && makeExistsPath( path ))
@@ -556,6 +664,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "LIST" ) || CommandIs( "NLST" ) || CommandIs( "MLSD" ))
   {
+    FTP_LOGDEBUG(F("Got LIST or NLST or MLSD"));
+    
     if ( dataConnect())
     {
       if ( openDir( & dir ))
@@ -578,6 +688,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "MLST" ))
   {
+    FTP_LOGDEBUG(F("Got MLST"));
+    
     char path[ FTP_CWD_SIZE ];
     uint16_t dat, tim;
     char dtStr[ 15 ];
@@ -612,12 +724,18 @@ bool FtpServer::processCommand()
   //  NOOP
   //
   else if ( CommandIs( "NOOP" ))
+  {
+    FTP_LOGDEBUG(F("Got NOOP"));
+    
     FtpOutCli << F("200 Zzz...") << endl;
+  }
   //
   //  RETR - Retrieve
   //
   else if ( CommandIs( "RETR" ))
   {
+    FTP_LOGDEBUG(F("Got RETR"));
+    
     char path[ FTP_CWD_SIZE ];
 
     if ( haveParameter() && makeExistsPath( path ))
@@ -643,6 +761,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "STOR" ) || CommandIs( "APPE" ))
   {
+    FTP_LOGDEBUG(F("Got STOR or APPE"));
+    
     char path[ FTP_CWD_SIZE ];
 
     if ( haveParameter() && makePath( path ))
@@ -673,6 +793,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "MKD" ))
   {
+    FTP_LOGDEBUG(F("Got MKD"));
+    
     char path[ FTP_CWD_SIZE ];
 
     if ( haveParameter() && makePath( path ))
@@ -695,6 +817,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "RMD" ))
   {
+    FTP_LOGDEBUG(F("Got RMD"));
+    
     char path[ FTP_CWD_SIZE ];
 
     if ( haveParameter() && makeExistsPath( path ))
@@ -714,6 +838,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "RNFR" ))
   {
+    FTP_LOGDEBUG(F("Got RNFR"));
+    
     rnfrName[ 0 ] = 0;
 
     if ( haveParameter() && makeExistsPath( rnfrName ))
@@ -729,6 +855,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "RNTO" ))
   {
+    FTP_LOGDEBUG(F("Got RNTO"));
+    
     char path[ FTP_CWD_SIZE ];
     char dirp[ FTP_FIL_SIZE ];
 
@@ -791,6 +919,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "MDTM" ) || CommandIs( "MFMT" ))
   {
+    FTP_LOGDEBUG(F("Got MDTM or MFTM"));
+    
     if ( haveParameter())
     {
       char path[ FTP_CWD_SIZE ];
@@ -833,6 +963,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "SIZE" ))
   {
+    FTP_LOGDEBUG(F("Got SIZE"));
+    
     char path[ FTP_CWD_SIZE ];
 
     if ( haveParameter() && makeExistsPath( path ))
@@ -851,6 +983,8 @@ bool FtpServer::processCommand()
   //
   else if ( CommandIs( "SITE" ))
   {
+    FTP_LOGDEBUG(F("Got SITE"));
+    
     if ( ParameterIs( "FREE" ))
     {
       uint32_t capa = capacity();
@@ -869,7 +1003,11 @@ bool FtpServer::processCommand()
   //  Unrecognized commands ...
   //
   else
+  {
+    FTP_LOGDEBUG(F("Got Unknown Command"));
+    
     FtpOutCli << F("500 Unknown command") << endl;
+  }
 
   return true;
 }
@@ -909,7 +1047,9 @@ bool FtpServer::dataConnected()
 {
   if ( data.connected())
     return true;
-
+  
+  FTP_LOGDEBUG(F("dataConnected: error, stop => FTP_Close"));
+  
   data.stop();
   FtpOutCli << F("426 Data connection closed. Transfer aborted") << endl;
   transferStage = FTP_Close;
@@ -1069,6 +1209,8 @@ bool FtpServer::doMlsd()
 {
   if ( ! dataConnected())
   {
+    FTP_LOGDEBUG(F("doMlsd: !dataConnected"));
+    
     dir.close();
     return false;
   }
@@ -1078,6 +1220,7 @@ bool FtpServer::doMlsd()
   if ( dir.nextFile())
   {
     char dtStr[ 15 ];
+    
     FtpOutData << F("Type=") << ( dir.isDir() ? F("dir") : F("file"))
                << F(";Modify=") << makeDateTimeStr( dtStr, dir.fileModDate(), dir.fileModTime())
                << F(";Size=") << long( dir.fileSize())
@@ -1106,6 +1249,8 @@ bool FtpServer::doMlsd()
     }
 
     file.close();
+    
+    FTP_LOGDEBUG1(F("doMlsd: done, return gfmt = "), gfmt? "true" : "false");
 
     return gfmt;
   }
@@ -1116,6 +1261,8 @@ bool FtpServer::doMlsd()
   FtpOutCli << F("226 ") << nbMatch << F(" matches total") << endl;
   dir.close();
   data.stop();
+  
+  FTP_LOGDEBUG(F("doMlsd: done, stop data connection"));
 
   return false;
 }
@@ -1149,6 +1296,7 @@ void FtpServer::abortTransfer()
   {
     file.close();
     dir.close();
+    
     FtpOutCli << F("426 Transfer aborted") << endl;
 
     FTP_LOGWARN(F(" Transfer aborted!"));
@@ -1398,7 +1546,7 @@ uint8_t FtpServer::getDateTime( char * dt, uint16_t * pyear, uint8_t * pmonth, u
 
   strncpy( dt, parameter, 14 );
 
-	FTP_LOGWARN1(F(" File: "), (char *) ( parameter + i ));
+  FTP_LOGWARN1(F(" File: "), (char *) ( parameter + i ));
   FTP_LOGWARN5(F(" Modification time yy/mm/dd: "), int (* pyear), F("/"), int (* pmonth), F("/"), int (* pday));
   FTP_LOGWARN5(F(" Modification time hh:mm:ss: "), int (* phour), F(":"), int (* pminute), F(":"), int (* psecond));
   
@@ -1424,6 +1572,8 @@ char * FtpServer::makeDateTimeStr( char * tstr, uint16_t date, uint16_t time )
 
   return tstr;
 }
+
+////////////////////////////////////////////////////////////////////////////
 
 // Return true if path points to a directory
 

@@ -6,12 +6,14 @@
   Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
   Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
   
-  Version: 1.1.0
+  Version: 1.2.0
 
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      30/04/2022 Initial porting and coding for Teensy 4.1 using built-in QNEthernet, NativeEthernet
   1.1.0   K Hoang      16/05/2022 Fix bug incomplete downloads from server to client
+  1.2.0   K Hoang      08/10/2022 Add support to WiFiNINA, such as Adafruit Airlift Featherwing. 
+                                  Configurable user_name length to 63 and user_password to 127
  ***********************************************************************************************************************/
 
 /*
@@ -54,10 +56,11 @@
   #endif
   
   // Default to QNEthernet if nothing pre-selected
-  #if !(USE_QN_ETHERNET || USE_NATIVE_ETHERNET || USE_ETHERNET_GENERIC)
+  #if !(USE_QN_ETHERNET || USE_NATIVE_ETHERNET || USE_ETHERNET_GENERIC || USE_WIFI_NINA)
     #define USE_QN_ETHERNET         true
     #define USE_NATIVE_ETHERNET     false
     #define USE_ETHERNET_GENERIC    false
+    #define USE_WIFI_NINA           false // Added 05-17-22 WEW
   #endif
 #else
   //#error Only Teensy 4.1 supported
@@ -65,13 +68,13 @@
 
 ////////////////////////////////////////////////////////////////////////////
 
-#define FTP_SERVER_TEENSY41_VERSION            "FTP_Server_Teensy41 v1.1.0"
+#define FTP_SERVER_TEENSY41_VERSION            "FTP_Server_Teensy41 v1.2.0"
 
 #define FTP_SERVER_TEENSY41_VERSION_MAJOR      1
-#define FTP_SERVER_TEENSY41_VERSION_MINOR      1
+#define FTP_SERVER_TEENSY41_VERSION_MINOR      2
 #define FTP_SERVER_TEENSY41_VERSION_PATCH      0
 
-#define FTP_SERVER_TEENSY41_VERSION_INT        1001000
+#define FTP_SERVER_TEENSY41_VERSION_INT        1002000
 
 ////////////////////////////////////////////////////////////////////////////
 

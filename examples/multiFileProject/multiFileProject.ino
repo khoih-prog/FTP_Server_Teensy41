@@ -20,8 +20,8 @@
   #error Only Teensy 4.1 supported
 #endif
 
-#define FTP_SERVER_TEENSY41_VERSION_MIN_TARGET      "FTP_Server_Teensy41 v1.0.0"
-#define FTP_SERVER_TEENSY41_VERSION_MIN             1000000
+#define FTP_SERVER_TEENSY41_VERSION_MIN_TARGET      "FTP_Server_Teensy41 v1.2.1"
+#define FTP_SERVER_TEENSY41_VERSION_MIN             1002001
 
 #define FTP_FILESYST    FTP_SDFAT2
 

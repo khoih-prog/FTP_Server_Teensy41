@@ -13,6 +13,7 @@
 
 
 * [Changelog](#changelog)
+  * [Releases v1.2.0](#releases-v120)
   * [Releases v1.1.0](#releases-v110)
   * [Releases v1.0.0](#releases-v100)
 
@@ -20,6 +21,11 @@
 ---
 
 ## Changelog
+
+### Releases v1.2.0
+
+1. Add support to `WiFiNINA`, such as `Adafruit Airlift Featherwing`
+2. Configurable `user_name` length to 63 and `user_password` to 127. Check [Setting FTP_CRED_SIZE on the fly like with FTP_BUF_SIZE #4](https://github.com/khoih-prog/FTP_Server_Teensy41/issues/4)
 
 ### Releases v1.1.0
 
