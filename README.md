@@ -29,6 +29,7 @@
 * [Examples](#examples)
   * [ 1. FTP_Server_SDFAT2](examples/FTP_Server_SDFAT2)
   * [ 2. multiFileProject](examples/multiFileProject)
+  * [ 3. FTP_Server_SDFAT2_NINA](examples/WiFiNINA/FTP_Server_SDFAT2_NINA) **New**
 * [Example FTP_Server_SDFAT2](#example-FTP_Server_SDFAT2)
 * [Debug Terminal Output Samples](#debug-terminal-output-samples)
   * [1. FTP_Server_SDFAT2 on Teensy4.1 with QNEthernet](#1-ftp_server_sdfat2-on-teensy-41-with-qnethernet)
@@ -52,14 +53,14 @@
 
 #### Features
 
-This [**FTP_Server_Teensy41 library**](https://github.com/khoih-prog/FTP_Server_Teensy41) is modified from [Arduino-Ftp-Server library](https://github.com/gallegojm/Arduino-Ftp-Server) to support Teensy 4.x with `QNEthernet`, `NativeEthernet` or `W5x00 using Ethernet_Generic Library`, and currently SDFat2. In the near future, `any FS, such as PSRAM, S, (Q)SPI Flash, etc.` will be supported.
+This [**FTP_Server_Teensy41 library**](https://github.com/khoih-prog/FTP_Server_Teensy41) is modified from [Arduino-Ftp-Server library](https://github.com/gallegojm/Arduino-Ftp-Server) to support Teensy 4.x with `QNEthernet`, `NativeEthernet`, `W5x00 using Ethernet_Generic Library` or `Adafruit Airlift Featherwing using WiFiNINA_Generic Library`, and currently SDFat2. In the near future, `any FS, such as PSRAM, LittleFS, (Q)SPI Flash, etc.` will be supported.
 
 ---
 
 #### Currently supported Boards
 
-1. **Teensy 4.1 using QNEthernet, NativeEthernet or W5x00 with Ethernet_Generic Library** and built-in SDCard, etc.
-2. **Teensy 4.0 using W5x00 with Ethernet_Generic Library**
+1. **Teensy 4.1 using QNEthernet, NativeEthernet, W5x00 with Ethernet_Generic Library or Adafruit Airlift Featherwing using WiFiNINA_Generic Library** and built-in SDCard, etc.
+2. **Teensy 4.0 using W5x00 with Ethernet_Generic Library or Adafruit Airlift Featherwing using WiFiNINA_Generic Library**
 
 ---
 ---
@@ -67,10 +68,11 @@ This [**FTP_Server_Teensy41 library**](https://github.com/khoih-prog/FTP_Server_
 ## Prerequisites
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
- 2. [`Teensy core v1.56+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1
- 3. [`QNEthernet Library version v0.14.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet.
+ 2. [`Teensy core v1.57+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1
+ 3. [`QNEthernet Library version v0.15.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet.
  4. [`NativeEthernet Library version stable111+`](https://github.com/vjmuzik/NativeEthernet) for Teensy 4.1 built-in Ethernet.
- 5. [`Ethernet_Generic library v2.1.0+`](https://github.com/khoih-prog/Ethernet_Generic) to use **W5x00**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Ethernet_Generic.svg?)](https://www.ardu-badge.com/Ethernet_Generic).
+ 5. [`Ethernet_Generic library v2.6.1+`](https://github.com/khoih-prog/Ethernet_Generic) to use **W5x00**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Ethernet_Generic.svg?)](https://www.ardu-badge.com/Ethernet_Generic)
+ 6. [`WiFiNINA_Generic library v1.8.14-6+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use **Adafruit Airlift Featherwing**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic).
 
 ---
 
@@ -83,9 +85,9 @@ The best and easiest way is to use `Arduino Library Manager`. Search for `FTP_Se
 ### Manual Install
 
 1. Navigate to [FTP_Server_Teensy41](https://github.com/khoih-prog/FTP_Server_Teensy41) page.
-2. Download the latest release `FTP_Server_Teensy41-master.zip`.
-3. Extract the zip file to `FTP_Server_Teensy41-master` directory 
-4. Copy the whole `FTP_Server_Teensy41-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+2. Download the latest release `FTP_Server_Teensy41-main.zip`.
+3. Extract the zip file to `FTP_Server_Teensy41-main` directory 
+4. Copy the whole `FTP_Server_Teensy41-main` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
 
 ### VS Code & PlatformIO:
 
@@ -123,7 +125,7 @@ These files must be copied into the directory:
 
 ### Original Documents
 
-Please have a look at [README_orig.md](README_orig.md) or [README.md](https://github.com/gallegojm/Arduino-Ftp-Server/blob/master/README.md)
+Please have a look at [README_orig.md](README_orig.md) or [README.md](https://github.com/gallegojm/Arduino-Ftp-Server/blob/main/README.md)
 
 
 ---
@@ -132,7 +134,8 @@ Please have a look at [README_orig.md](README_orig.md) or [README.md](https://gi
 ### Examples
 
  1. [FTP_Server_SDFAT2](examples/FTP_Server_SDFAT2)
- 2. [multiFileProject](examples/multiFileProject) 
+ 2. [multiFileProject](examples/multiFileProject)
+ 3. [FTP_Server_SDFAT2_NINA](examples/WiFiNINA/FTP_Server_SDFAT2_NINA) **New**
 
 ---
 ---
@@ -141,14 +144,14 @@ Please have a look at [README_orig.md](README_orig.md) or [README.md](https://gi
 
 #### 1. File [FTP_Server_SDFAT2.ino](examples/FTP_Server_SDFAT2/FTP_Server_SDFAT2.ino)
 
-https://github.com/khoih-prog/FTP_Server_Teensy41/blob/5916a2c287b19b899eae9456c5937f522a8d6e30/examples/FTP_Server_SDFAT2/FTP_Server_SDFAT2.ino#L10-L369
+https://github.com/khoih-prog/FTP_Server_Teensy41/blob/edc4cff11ea3c5f5704fd7922a2f04e61bd74d32/examples/FTP_Server_SDFAT2/FTP_Server_SDFAT2.ino#L10-L373
 
 
 ---
 
 #### 2. File [defines.h](examples/FTP_Server_SDFAT2/defines.h)
 
-https://github.com/khoih-prog/FTP_Server_Teensy41/blob/5916a2c287b19b899eae9456c5937f522a8d6e30/examples/FTP_Server_SDFAT2/defines.h#L10-L126
+https://github.com/khoih-prog/FTP_Server_Teensy41/blob/edc4cff11ea3c5f5704fd7922a2f04e61bd74d32/examples/FTP_Server_SDFAT2/defines.h#L10-L126
 
 ---
 ---
@@ -162,7 +165,7 @@ Following is debug terminal output when running example [FTP_Server_SDFAT2](exam
 
 ```
 Starting FTP_Server_SDFAT2 on TEENSY 4.1 with QNEthernet
-FTP_Server_Teensy41 v1.1.0
+FTP_Server_Teensy41 v1.2.0
 Initializing SD card...
 Wiring is correct and a card is present.
 
@@ -233,7 +236,7 @@ Following is debug terminal output when running example [FTP_Server_SDFAT2](exam
 
 ```
 Starting FTP_Server_SDFAT2 on TEENSY 4.1 with NativeEthernet
-FTP_Server_Teensy41 v1.1.0
+FTP_Server_Teensy41 v1.2.0
 Initializing SD card...
 Wiring is correct and a card is present.
 
@@ -292,7 +295,7 @@ Following is debug terminal output when running example [FTP_Server_SDFAT2](exam
 
 ```
 Starting FTP_Server_SDFAT2 on TEENSY 4.0 with W5x00 using Ethernet_Generic Library with Large Buffer
-FTP_Server_Teensy41 v1.1.0
+FTP_Server_Teensy41 v1.2.0
 ======== USE_ETHERNET_GENERIC ========
 [FTP] Default SPI pinout:
 [FTP] MOSI: 11
@@ -358,10 +361,13 @@ Submit issues to: [FTP_Server_Teensy41 issues](https://github.com/khoih-prog/FTP
 ## DONE
 
  1. Initial porting and coding for **Teensy 4.1 using built-in QNEthernet, NativeEthernet or W5x00 using Ethernet_Generic Library**
- 2. Support SD card and SDFat1, SDFat2
+ 2. Support SD card and `SDFat1`, `SDFat2`
  3. Add debugging features.
  4. Add Table-of-Contents and Version String
  5. Fix bug incomplete downloads from server to client
+ 6. Add support to `WiFiNINA`, such as `Adafruit Airlift Featherwing`
+ 7. Configurable `user_name` length to 63 and `user_password` to 127
+
 
 ---
 ---
@@ -370,12 +376,15 @@ Submit issues to: [FTP_Server_Teensy41 issues](https://github.com/khoih-prog/FTP
 ### Contributions and Thanks
 
 1. Based on and modified from [Jean-Michel Gallego's Arduino-Ftp-Server library](https://github.com/gallegojm/Arduino-Ftp-Server)
-2. Thanks to [Warren Watson](https://github.com/wwatson4506) to make PR in [Incomplete downloads from server to client. #2](https://github.com/khoih-prog/FTP_Server_Teensy41/pull/2) leading to the new version v1.1.0 to fix bug incomplete downloads from server to client.
+2. Thanks to [Warren Watson](https://github.com/wwatson4506) to make PR in [Incomplete downloads from server to client. #2](https://github.com/khoih-prog/FTP_Server_Teensy41/pull/2) leading to the new version `v1.1.0` to fix bug incomplete downloads from server to client
+3. Thanks to [davekc](https://github.com/davekc) to post issue in [Setting FTP_CRED_SIZE on the fly like with FTP_BUF_SIZE #4](https://github.com/khoih-prog/FTP_Server_Teensy41/issues/4) leading to the new version `v1.2.0` to have configurable `user_name` length to max 63 and `user_password` to max 127
+
 
 <table>
   <tr>
     <td align="center"><a href="https://github.com/gallegojm"><img src="https://github.com/gallegojm.png" width="100px;" alt="gallegojm"/><br /><sub><b>⭐️ Jean-Michel Gallego</b></sub></a><br /></td>
     <td align="center"><a href="https://github.com/wwatson4506"><img src="https://github.com/wwatson4506.png" width="100px;" alt="wwatson4506"/><br /><sub><b>Warren Watson</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/davekc"><img src="https://github.com/davekc.png" width="100px;" alt="davekc"/><br /><sub><b>davekc</b></sub></a><br /></td>
   </tr>
 </table>
 
