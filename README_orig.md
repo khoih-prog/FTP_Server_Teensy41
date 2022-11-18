@@ -96,11 +96,11 @@ You may have to modify some of the definitions in FtpServerConfig.h:
 ## Calling the Ftp Server routine in the loop():
   **ftpSrv.service();**
  - If needed, this function returns the status of the Ftp Server as an 8 bit integer:
-  + bits 0-2 represents the stage of the ftp command connexion
+  + bits 0-2 represents the stage of the ftp command connection
              see the definition of **enum ftpCmd** in FtpServer.h
   + bits 3-5 represents the stage of the ftp transfer
              see the definition of **enum ftpTransfer**
-  + bits 6 & 7 represents the stage of the data connexion
+  + bits 6 & 7 represents the stage of the data connection
              see the definition of **enum ftpDataConn**
  - As an example, uncomment the line **#define FTP_DEBUG1** in the file FtpServerConfig.h
              and run the sketch FtpServerStatusLed
