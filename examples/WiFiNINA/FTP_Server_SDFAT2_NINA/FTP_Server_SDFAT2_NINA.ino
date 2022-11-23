@@ -1,8 +1,8 @@
 /**********************************************************************************************************************
   FTP_Server_SDFAT2.ino
-   
+
   FTP_Server_Teensy41 is an FTP Server for Teensy 4.1 using SD, FS, etc. with QNEthernet or NativeEthernet
-  
+
   Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
   Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
  ***********************************************************************************************************************/
@@ -75,29 +75,32 @@ void initNetwork()
   // check for the WiFi module:
   // Using this setPins() with Adafruit WiFiNINA library
   //WiFi.setPins(SPIWIFI_SS, SPIWIFI_ACK, ESP32_RESETN, ESP32_GPIO0, &SPIWIFI);
-  
-  if (WiFi.status() == WL_NO_MODULE) 
+
+  if (WiFi.status() == WL_NO_MODULE)
   {
     Serial.println("Communication with WiFi module failed!");
+
     // don't continue
     while (true);
   }
- 
+
   // Start the Ethernet connection, using DHCP
   Serial.print("Initialize WiFi using DHCP => ");
   WiFi.begin(ssid, pass);
   Serial.println("");
 
   // Wait for connection
-  while (WiFi.status() != WL_CONNECTED) 
+  while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
     Serial.print(".");
   }
-  
+
   Serial.println("");
-  Serial.print("Connected to "); Serial.println(ssid);
-  Serial.print("IP address: ");  Serial.println(WiFi.localIP());
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
 
 #elif USE_NATIVE_ETHERNET
 
@@ -161,19 +164,19 @@ void initNetwork()
   FTP_LOGWARN1(F("SCK:"),  SCK);
   FTP_LOGWARN1(F("SS:"),   SS);
   FTP_LOGWARN(F("========================="));
-  
+
   // unknown board, do nothing, use default SS = 10
-  #ifndef USE_THIS_SS_PIN
-    #define USE_THIS_SS_PIN   10    // For other boards
-  #endif
+#ifndef USE_THIS_SS_PIN
+#define USE_THIS_SS_PIN   10    // For other boards
+#endif
 
-  #if defined(BOARD_NAME)
-    FTP_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
-  #else
-    FTP_LOGWARN1(F("Unknown board setCsPin:"), USE_THIS_SS_PIN);
-  #endif
+#if defined(BOARD_NAME)
+  FTP_LOGWARN3(F("Board :"), BOARD_NAME, F(", setCsPin:"), USE_THIS_SS_PIN);
+#else
+  FTP_LOGWARN1(F("Unknown board setCsPin:"), USE_THIS_SS_PIN);
+#endif
 
-  // For other boards, to change if necessary 
+  // For other boards, to change if necessary
   Ethernet.init (USE_THIS_SS_PIN);
 
   // start the ethernet connection and the server:
@@ -185,7 +188,7 @@ void initNetwork()
 
   Serial.print("IP Address = ");
   Serial.println(Ethernet.localIP());
-  
+
 #endif
 }
 
@@ -208,18 +211,21 @@ void cardInit()
 
   // print the type of card
   Serial.print("\nCard type: ");
-  
+
   switch (card.type())
   {
     case SD_CARD_TYPE_SD1:
       Serial.println("SD1");
       break;
+
     case SD_CARD_TYPE_SD2:
       Serial.println("SD2");
       break;
+
     case SD_CARD_TYPE_SDHC:
       Serial.println("SDHC");
       break;
+
     default:
       Serial.println("Unknown");
   }
@@ -228,14 +234,16 @@ void cardInit()
   if (!volume.init(card))
   {
     Serial.println("Could not find FAT16/FAT32 partition.\nMake sure you've formatted the card");
-    
+
     return;
   }
 
   // print the type and size of the first FAT-type volume
   uint32_t volumesize;
 
-  Serial.print("\nVolume type is FAT"); Serial.println(volume.fatType(), DEC); Serial.println();
+  Serial.print("\nVolume type is FAT");
+  Serial.println(volume.fatType(), DEC);
+  Serial.println();
 
   volumesize = volume.blocksPerCluster();    // clusters are collections of blocks
   volumesize *= volume.clusterCount();       // we'll have a lot of clusters
@@ -246,8 +254,12 @@ void cardInit()
     Serial.println(volumesize * 512);        // SD card blocks are always 512 bytes
   }
 
-  Serial.print("Volume size (Kbytes): "); volumesize /= 2;    Serial.println(volumesize);
-  Serial.print("Volume size (Mbytes): "); volumesize /= 1024; Serial.println(volumesize);
+  Serial.print("Volume size (Kbytes): ");
+  volumesize /= 2;
+  Serial.println(volumesize);
+  Serial.print("Volume size (Mbytes): ");
+  volumesize /= 1024;
+  Serial.println(volumesize);
 }
 
 void printDirectory(File dir, int numSpaces)
@@ -279,8 +291,9 @@ void printDirectory(File dir, int numSpaces)
         n = 10;
 
       printSpaces(50 - numSpaces - strlen(entry.name()) - n);
-      Serial.print("  "); Serial.print(entry.size(), DEC);
-      
+      Serial.print("  ");
+      Serial.print(entry.size(), DEC);
+
       DateTimeFields datetime;
 
       if (entry.getModifyTime(datetime))
@@ -291,7 +304,7 @@ void printDirectory(File dir, int numSpaces)
 
       Serial.println();
     }
-    
+
     entry.close();
   }
 }
@@ -308,8 +321,8 @@ void printTime(const DateTimeFields tm)
 {
   const char *months[12] =
   {
-      "January",  "February", "March",      "April",    "May",        "June",
-      "July",     "August",   "September",  "October",  "November",   "December"
+    "January",  "February", "March",      "April",    "May",        "June",
+    "July",     "August",   "September",  "October",  "November",   "December"
   };
 
   if (tm.hour < 10)
@@ -335,7 +348,7 @@ void SDCardTest()
   Serial.println("\n===============================");
   Serial.print("SDCard Initialization : ");
 
-  
+
   if (!SD.begin(chipSelect))
   {
     Serial.println("failed!");
@@ -354,15 +367,18 @@ void SDCardTest()
 void setup()
 {
   Serial.begin(115200);
+
   while (!Serial && millis() < 5000);
 
   delay(500);
 
-  Serial.print(F("\nStarting FTP_Server_SDFAT2_NINA on ")); Serial.print(BOARD_NAME);
-  Serial.print(F(" with ")); Serial.println(SHIELD_TYPE);
+  Serial.print(F("\nStarting FTP_Server_SDFAT2_NINA on "));
+  Serial.print(BOARD_NAME);
+  Serial.print(F(" with "));
+  Serial.println(SHIELD_TYPE);
   Serial.println(FTP_SERVER_TEENSY41_VERSION);
 
-// Uncomment this if Teensy 4.0 has SD card
+  // Uncomment this if Teensy 4.0 has SD card
 #if (defined(ARDUINO_TEENSY41))
 
   Serial.println("Initializing SD card...");
@@ -373,7 +389,7 @@ void setup()
 
   ////////////////////////////////////////////////////////////////
 
-//  SDCardTest();
+  //  SDCardTest();
 
   //////////////////////////////////////////////////////////////////
 #endif
@@ -384,8 +400,10 @@ void setup()
   ftpSrv.init();
   ftpSrv.credentials( FTP_ACCOUNT, FTP_PASSWORD );
 
-  Serial.print("FTP Server Credentials => account = "); Serial.print(FTP_ACCOUNT);
-  Serial.print(", password = "); Serial.println(FTP_PASSWORD);
+  Serial.print("FTP Server Credentials => account = ");
+  Serial.print(FTP_ACCOUNT);
+  Serial.print(", password = ");
+  Serial.println(FTP_PASSWORD);
 }
 
 /*******************************************************************************

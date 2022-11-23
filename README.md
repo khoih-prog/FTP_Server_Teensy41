@@ -1,12 +1,15 @@
-# FTP_Server_Teensy41
+# FTP_Server_Teensy41 Library
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/FTP_Server_Teensy41.svg?)](https://www.ardu-badge.com/FTP_Server_Teensy41)
 [![GitHub release](https://img.shields.io/github/release/khoih-prog/FTP_Server_Teensy41.svg)](https://github.com/khoih-prog/FTP_Server_Teensy41/releases)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/FTP_Server_Teensy41.svg)](http://github.com/khoih-prog/FTP_Server_Teensy41/issues)
 
+
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Donate to my libraries using BuyMeACoffee" style="height: 50px !important;width: 181px !important;" ></a>
 <a href="https://www.buymeacoffee.com/khoihprog6" title="Donate to my libraries using BuyMeACoffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-orange.svg?logo=buy-me-a-coffee&logoColor=FFDD00" style="height: 20px !important;width: 200px !important;" ></a>
+<a href="https://profile-counter.glitch.me/khoih-prog/count.svg" title="Total khoih-prog Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog/count.svg" style="height: 30px;width: 200px;"></a>
+<a href="https://profile-counter.glitch.me/khoih-prog-FTP_Server_Teensy41/count.svg" title="FTP_Server_Teensy41 Visitor count"><img src="https://profile-counter.glitch.me/khoih-prog-FTP_Server_Teensy41/count.svg" style="height: 30px;width: 200px;"></a>
 
 ---
 ---
@@ -69,10 +72,10 @@ This [**FTP_Server_Teensy41 library**](https://github.com/khoih-prog/FTP_Server_
 
  1. [`Arduino IDE 1.8.19+` for Arduino](https://github.com/arduino/Arduino). [![GitHub release](https://img.shields.io/github/release/arduino/Arduino.svg)](https://github.com/arduino/Arduino/releases/latest)
  2. [`Teensy core v1.57+`](https://www.pjrc.com/teensy/td_download.html) for Teensy 4.1
- 3. [`QNEthernet Library version v0.15.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet.
+ 3. [`QNEthernet Library version v0.16.0+`](https://github.com/ssilverman/QNEthernet) for Teensy 4.1 built-in Ethernet.
  4. [`NativeEthernet Library version stable111+`](https://github.com/vjmuzik/NativeEthernet) for Teensy 4.1 built-in Ethernet.
- 5. [`Ethernet_Generic library v2.6.1+`](https://github.com/khoih-prog/Ethernet_Generic) to use **W5x00**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Ethernet_Generic.svg?)](https://www.ardu-badge.com/Ethernet_Generic)
- 6. [`WiFiNINA_Generic library v1.8.14-6+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use **Adafruit Airlift Featherwing**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic).
+ 5. [`Ethernet_Generic library v2.7.1+`](https://github.com/khoih-prog/Ethernet_Generic) to use **W5x00**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/Ethernet_Generic.svg?)](https://www.ardu-badge.com/Ethernet_Generic)
+ 6. [`WiFiNINA_Generic library v1.8.15-1+`](https://github.com/khoih-prog/WiFiNINA_Generic) to use **Adafruit Airlift Featherwing**. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/WiFiNINA_Generic.svg?)](https://www.ardu-badge.com/WiFiNINA_Generic).
 
 ---
 
@@ -163,7 +166,7 @@ https://github.com/khoih-prog/FTP_Server_Teensy41/blob/edc4cff11ea3c5f5704fd7922
 Following is debug terminal output when running example [FTP_Server_SDFAT2](examples/FTP_Server_SDFAT2) on Teensy4.1 using Built-in Ethernet and QNEthernet Library demonstrate the operation of FTP Server and SD Card using SDFat2.
 
 
-```
+```cpp
 Starting FTP_Server_SDFAT2 on TEENSY 4.1 with QNEthernet
 FTP_Server_Teensy41 v1.2.0
 Initializing SD card...
@@ -234,7 +237,7 @@ QUIT
 
 Following is debug terminal output when running example [FTP_Server_SDFAT2](examples/FTP_Server_SDFAT2) on Teensy4.1 using Built-in Ethernet and NativeEthernet Library demonstrate the operation of FTP Server and SD Card using SDFat2.
 
-```
+```cpp
 Starting FTP_Server_SDFAT2 on TEENSY 4.1 with NativeEthernet
 FTP_Server_Teensy41 v1.2.0
 Initializing SD card...
@@ -293,7 +296,7 @@ QUIT
 
 Following is debug terminal output when running example [FTP_Server_SDFAT2](examples/FTP_Server_SDFAT2) on Teensy4.0 using W5x00 using Ethernet_Generic Library with Large Buffer.
 
-```
+```cpp
 Starting FTP_Server_SDFAT2 on TEENSY 4.0 with W5x00 using Ethernet_Generic Library with Large Buffer
 FTP_Server_Teensy41 v1.2.0
 ======== USE_ETHERNET_GENERIC ========
@@ -409,8 +412,8 @@ If you want to contribute to this project:
 
 ## Copyright
 
-- Copyright 2014- Jean-Michel Gallego
-- Copyright 2022- Khoi Hoang
+- Copyright (c) 2014- Jean-Michel Gallego
+- Copyright (c) 2022- Khoi Hoang
 
 
 

@@ -1,8 +1,8 @@
 /****************************************************************************************************************************
   defines.h
-  
+
   FTP_Server_Teensy41 is an FTP Server for Teensy 4.1 using SD, FS, etc. with QNEthernet or NativeEthernet
-  
+
   Based on and modified from Arduino-Ftp-Server Library (https://github.com/gallegojm/Arduino-Ftp-Server)
   Built by Khoi Hoang https://github.com/khoih-prog/FTP_Server_Teensy41
  ***************************************************************************************************************************************/
@@ -15,7 +15,7 @@
 // Debug Level from 0 to 4
 #define _FTP_SERVER_LOGLEVEL_               1
 
-#if ( defined(CORE_TEENSY) && defined(__IMXRT1062__)) 
+#if ( defined(CORE_TEENSY) && defined(__IMXRT1062__))
   #if (defined(ARDUINO_TEENSY41))
     // For Teensy 4.1
     #define BOARD_TYPE      "TEENSY 4.1"
@@ -44,7 +44,7 @@
 
 #define USE_UIP_ETHERNET      false
 #define USE_ETHERNET_GENERIC  false
-#define USE_ETHERNET_ESP8266  false 
+#define USE_ETHERNET_ESP8266  false
 #define USE_ETHERNET_ENC      false
 #define USE_CUSTOM_ETHERNET   false
 
@@ -53,94 +53,94 @@
   using namespace qindesign::network;
   //#warning Using QNEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
   #define SHIELD_TYPE           "QNEthernet"
-  
+
 #elif USE_NATIVE_ETHERNET
   #include "NativeEthernet.h"
   //#warning Using NativeEthernet lib for Teensy 4.1. Must also use Teensy Packages Patch or error
   #define SHIELD_TYPE           "NativeEthernet"
-  
-#elif USE_WIFI_NINA
-   //#include "WiFiNINA.h"
-   #include "WiFiNINA_Generic.h"
-   #include "SPI.h"
-   #include "arduino_secrets.h" 
 
-   // T4.1 SPI pin defs for WiFiNINA AirLift. To update WiFiNINA_Pinout_Generic.h using this info
-   //#warning Using WiFiNINA_Generic lib for Teensy 4.1. Must also update WiFiNINA_Pinout_Generic.h or error
-   
-   //#define SPIWIFI       SPI  // The SPI port
-   //#define SPIWIFI_SS     5   // Chip select pin
-   //#define ESP32_RESETN   6   // Reset pin
-   //#define SPIWIFI_ACK    9   // a.k.a BUSY or READY pin
-   //#define ESP32_GPIO0   -1
-   ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
-   char ssid[] = SECRET_SSID;        // your network SSID (name)
-   char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
+#elif USE_WIFI_NINA
+  //#include "WiFiNINA.h"
+  #include "WiFiNINA_Generic.h"
+  #include "SPI.h"
+  #include "arduino_secrets.h"
+
+  // T4.1 SPI pin defs for WiFiNINA AirLift. To update WiFiNINA_Pinout_Generic.h using this info
+  //#warning Using WiFiNINA_Generic lib for Teensy 4.1. Must also update WiFiNINA_Pinout_Generic.h or error
+
+  //#define SPIWIFI       SPI  // The SPI port
+  //#define SPIWIFI_SS     5   // Chip select pin
+  //#define ESP32_RESETN   6   // Reset pin
+  //#define SPIWIFI_ACK    9   // a.k.a BUSY or READY pin
+  //#define ESP32_GPIO0   -1
+  ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
+  char ssid[] = SECRET_SSID;        // your network SSID (name)
+  char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
   #define SHIELD_TYPE           "WiFiNINA"
 
 #elif USE_ETHERNET_GENERIC
 
   #include <SPI.h>
-  
+
   ///////////////////////////////////////////////////////////
-  
+
   // W5100 chips can have up to 4 sockets.  W5200 & W5500 can have up to 8 sockets.
   // Use EthernetLarge feature, Larger buffers, but reduced number of simultaneous connections/sockets (MAX_SOCK_NUM == 2)
   #define ETHERNET_LARGE_BUFFERS
-  
+
   //////////////////////////////////////////////////////////
-  
+
   #include "Ethernet_Generic.h"
-  
+
   #if defined(ETHERNET_LARGE_BUFFERS)
     #define SHIELD_TYPE           "W5x00 using Ethernet_Generic Library with Large Buffer"
   #else
     #define SHIELD_TYPE           "W5x00 using Ethernet_Generic Library"
   #endif
-  
+
 #endif
 
- 
+
 #if (USE_NATIVE_ETHERNET || USE_ETHERNET_GENERIC)
-  // Enter a MAC address and IP address for your controller below.
-  #define NUMBER_OF_MAC      20
-  
-  byte mac[][NUMBER_OF_MAC] =
-  {
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x01 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x02 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x03 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x04 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x05 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x06 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x07 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x08 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x09 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x0A },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x0B },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x0C },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x0D },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x0E },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x0F },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x10 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x11 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x12 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x13 },
-    { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x14 },
-  };
+// Enter a MAC address and IP address for your controller below.
+#define NUMBER_OF_MAC      20
+
+byte mac[][NUMBER_OF_MAC] =
+{
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x01 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x02 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x03 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x04 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x05 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x06 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x07 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x08 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x09 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x0A },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x0B },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x0C },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x0D },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x0E },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x0F },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x10 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x11 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x12 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0x13 },
+  { 0xDE, 0xAD, 0xBE, 0xEF, 0xBE, 0x14 },
+};
 
 #else
 
-  #define USING_DHCP    true   //true
-  
-  #if !USING_DHCP
-    // Set the static IP address to use if the DHCP fails to assign
-    IPAddress myIP(192, 168, 0, 114);
-    IPAddress myNetmask(255, 255, 255, 0);
-    IPAddress myGW(192, 168, 0, 1);
-    //IPAddress mydnsServer(192, 168, 2, 1);
-    IPAddress mydnsServer(192, 168, 0, 1);
-  #endif
+#define USING_DHCP    true   //true
+
+#if !USING_DHCP
+  // Set the static IP address to use if the DHCP fails to assign
+  IPAddress myIP(192, 168, 0, 114);
+  IPAddress myNetmask(255, 255, 255, 0);
+  IPAddress myGW(192, 168, 0, 1);
+  //IPAddress mydnsServer(192, 168, 2, 1);
+  IPAddress mydnsServer(192, 168, 0, 1);
+#endif
 
 #endif
 
